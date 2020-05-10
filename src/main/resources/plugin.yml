@@ -1,0 +1,4 @@
+main: dev.weary.PlayerDetectorPlugin
+name: PlayerDetector
+version: 1.0
+api-version: 1.15

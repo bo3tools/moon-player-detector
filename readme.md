@@ -61,6 +61,15 @@ Plugin configuration can be changed in the `PlayerDetector/config.yml` file.
   * Radius to look up additional players nearby the closest detected player
   * Value: Double
 
+* `super-scouting-device.max-uses` (super only)
+  * Maximum uses of the Super Scouting Device, after which it is consumed
+  * Value: Integer
+
+* `super-scouting-device.uses-suffix` (super only)
+  * Text to format the uses remaining with
+  * Format: %d (uses left), %d (max uses)
+  * Value: Formatted colored string
+
 ## Commands
 
 * `/detector give <basic|super>`

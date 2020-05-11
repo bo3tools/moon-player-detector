@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static dev.weary.config.Setting.*;
@@ -54,7 +55,11 @@ class ScoutingDeviceItem extends CustomItem {
         double closestDistance = Double.MAX_VALUE;
 
         for (Player otherPlayer: server.getOnlinePlayers()) {
-            if (!player.equals(otherPlayer) && player.getWorld().equals(otherPlayer.getWorld())) {
+            boolean isInSameWorld = player.getWorld().equals(otherPlayer.getWorld());
+            boolean isNotSamePlayer = !player.equals(otherPlayer);
+            boolean isInSurvival = otherPlayer.getGameMode() == GameMode.SURVIVAL;
+
+            if (isNotSamePlayer && isInSameWorld && isInSurvival) {
                 double distance = playerLocation.distance(otherPlayer.getLocation());
                 if (distance >= minRadius && distance <= maxRadius && distance < closestDistance) {
                     closestDistance = distance;
@@ -72,7 +77,10 @@ class ScoutingDeviceItem extends CustomItem {
         ArrayList<Player> nearbyPlayers = new ArrayList<>();
 
         for (Player otherPlayer: server.getOnlinePlayers()) {
-            if (player.getWorld().equals(otherPlayer.getWorld())) {
+            boolean isInSameWorld = player.getWorld().equals(otherPlayer.getWorld());
+            boolean isInSurvival = otherPlayer.getGameMode() == GameMode.SURVIVAL;
+
+            if (isInSameWorld && isInSurvival) {
                 double distance = playerLocation.distance(otherPlayer.getLocation());
                 if (distance <= maxRadius) {
                     nearbyPlayers.add(otherPlayer);
@@ -132,7 +140,15 @@ class ScoutingDeviceItem extends CustomItem {
             player.sendMessage(this.nobodyDetectedMessage);
         }
         else {
-            ArrayList<Player> revealedPlayers = getNearbyPlayers(closestPlayer, this.nearbyRadius);
+            ArrayList<Player> nearbyPlayers = getNearbyPlayers(closestPlayer, this.nearbyRadius);
+            ArrayList<Player> excludedPlayers = getNearbyPlayers(player, this.minRadius);
+
+            ArrayList<Player> revealedPlayers = new ArrayList<>();
+            for (Player nearbyPlayer: nearbyPlayers) {
+                if (!excludedPlayers.contains(nearbyPlayer)) {
+                    revealedPlayers.add(nearbyPlayer);
+                }
+            }
 
             int numberOfPeople = revealedPlayers.size();
             if (numberOfPeople > 0) {

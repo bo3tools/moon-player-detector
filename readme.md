@@ -11,6 +11,8 @@
 
 * These players are now detected
 
+![Visualization](image.png)
+
 ## Configuration
 
 Plugin configuration can be changed in the `PlayerDetector/config.yml` file.
